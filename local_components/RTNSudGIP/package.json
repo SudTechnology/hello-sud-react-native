@@ -1,0 +1,36 @@
+{
+  "name": "rtn-sud-gip",
+  "version": "0.0.1",
+  "description": "Showcase a Fabric Native Component with a centered text",
+  "react-native": "js/index",
+  "source": "js/index",
+  "files": [
+    "js",
+    "android",
+    "ios",
+    "rtn-sud-gip.podspec",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "keywords": ["react-native", "ios", "android"],
+  "repository": "https://github.com/<your_github_handle>/rtn-sud-gip",
+  "author": "<Your Name> <your_email@your_provider.com> (https://github.com/<your_github_handle>)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/<your_github_handle>/rtn-sud-gip/issues"
+  },
+  "homepage": "https://github.com/<your_github_handle>/rtn-sud-gip#readme",
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "codegenConfig": {
+    "name": "RTNSudGIPSpecs",
+    "type": "components",
+    "jsSrcsDir": "js"
+  }
+}

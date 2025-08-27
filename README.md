@@ -24,6 +24,8 @@ With Metro running, open a new terminal window/pane from the root of your React 
 
 ### Android
 
+For android, endter android directory and run `./gradlew clean`
+
 ```sh
 # Using npm
 npm run android
@@ -114,6 +116,8 @@ yarn ios
 ```
 
 ## android
+
+add local.properties in the android project root
 
 additional: copy the MainActivity implementation code :
 

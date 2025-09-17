@@ -88,7 +88,7 @@ class SudMGPPlugin(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     fun notifyReactOnGameStateChanged(state: String, dataJson:String) {
         val params: WritableMap = Arguments.createMap()
-        params.putString("gameState", state)
+        params.putString("state", state)
         params.putString("dataJson", dataJson)
         reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)

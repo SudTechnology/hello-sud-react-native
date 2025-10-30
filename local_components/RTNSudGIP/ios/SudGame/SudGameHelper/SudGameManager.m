@@ -41,10 +41,15 @@
     }
     [self.sudGameEventHandler setupLoadConfigModel:configModel];
     __weak typeof(self) weakSelf = self;
-    [self.sudGameEventHandler onGetCode:configModel.userId success:^(NSString * _Nonnull code) {
-        NSLog(@"on getCode success");
-        [weakSelf initSudMGPSDK:configModel code:code success:success fail:fail];
-    } fail:fail];
+    if (configModel.code.length > 0) {
+        [self initSudMGPSDK:configModel code:configModel.code success:success fail:fail];
+    }else {
+        [self.sudGameEventHandler onGetCode:configModel.userId success:^(NSString * _Nonnull code) {
+            NSLog(@"on getCode success");
+            [weakSelf initSudMGPSDK:configModel code:code success:success fail:fail];
+        } fail:fail];
+    }
+
 }
 
 - (void)destroyGame {

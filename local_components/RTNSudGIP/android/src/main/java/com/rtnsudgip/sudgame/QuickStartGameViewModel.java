@@ -70,6 +70,7 @@ public class QuickStartGameViewModel extends BaseGameViewModel {
 
     private SudMGPPlugin sudMgpPlugin = null;
     private GameGetCodeListener getCodeListener;
+    private String code = "";
 
     public void setSudMgpPlugin(SudMGPPlugin plugin) {
         this.sudMgpPlugin = plugin;
@@ -77,7 +78,7 @@ public class QuickStartGameViewModel extends BaseGameViewModel {
 
 
     public void updateCode(String code) {
-
+        
         if (code.isEmpty()) {
             if (getCodeListener != null) {
                 getCodeListener.onFailed();
@@ -87,6 +88,7 @@ public class QuickStartGameViewModel extends BaseGameViewModel {
         if (getCodeListener != null) {
             getCodeListener.onSuccess(code);
         }
+        this.code = code;
     }
     /**
      * 向接入方服务器获取code
@@ -95,6 +97,11 @@ public class QuickStartGameViewModel extends BaseGameViewModel {
     @Override
     protected void getCode(Activity activity, String userId, String appId, GameGetCodeListener listener) {
         getCodeListener = listener;
+        if (!code.isEmpty()){
+            listener.onSuccess(code);
+            code = "";
+            return;
+        }
         if (sudMgpPlugin != null) {
             sudMgpPlugin.notifyReactOnGetCode(userId, appId);
             return;

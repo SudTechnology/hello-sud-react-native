@@ -17,7 +17,7 @@ public class GameView extends FrameLayout {
     private void init() {
 
         // Set the background color to red
-        setBackgroundColor(Color.GREEN);
+        //setBackgroundColor(Color.GREEN);
         // Set the layout parameters to make it full screen
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT,

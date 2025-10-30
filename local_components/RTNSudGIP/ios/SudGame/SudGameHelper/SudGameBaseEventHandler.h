@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "SudMGPWrapper.h"
 
-typedef void(^SudGmSuccessVoidBlock)(void);
-typedef void(^SudGmSuccessStringBlock)(NSString *_Nonnull code);
-typedef void(^SudGmFailedBlock)(NSInteger errCode, NSString *_Nullable errMsg);
+typedef void (^SudGmSuccessVoidBlock)(void);
+typedef void (^SudGmSuccessStringBlock)(NSString *_Nonnull code);
+typedef void (^SudGmFailedBlock)(NSInteger errCode, NSString *_Nullable errMsg);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,56 +19,55 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SudGameLoadConfigModel : NSObject
 /// 应用ID，联系SUD获取
 /// Application ID. Contact SUD to obtain it
-@property(nonatomic, strong)NSString *appId;
+@property(nonatomic, strong) NSString *appId;
 /// Application Key. Contact SUD to obtain it
 /// The game ID.
-@property(nonatomic, strong)NSString *appKey;
+@property(nonatomic, strong) NSString *appKey;
 /// 加载环境，正式环境传入NO,测试环境传入YES.
 /// Load environment. Pass NO to the formal environment and YES to the test environment.
-@property(nonatomic, assign)BOOL isTestEnv;
+@property(nonatomic, assign) BOOL isTestEnv;
 
 /// 游戏ID
 /// The game ID.
-@property (nonatomic, assign)int64_t gameId;
+@property(nonatomic, assign) int64_t gameId;
 /// 房间ID
 /// The room ID.
-@property (nonatomic, strong)NSString * roomId;
+@property(nonatomic, strong) NSString *roomId;
 /// 当前用户ID
 /// The current user ID.
-@property (nonatomic, strong)NSString * userId;
+@property(nonatomic, strong) NSString *userId;
 /// 语言 支持简体"zh-CN"    繁体"zh-TW"    英语"en-US"   马来"ms-MY"
 /// The language (e.g., "zh-CN", "zh-TW", "en-US", "ms-MY").
-@property (nonatomic, strong)NSString * language;
+@property(nonatomic, strong) NSString *language;
 /// 加载展示视图
 /// The view for displaying the game.
-@property (nonatomic, strong)UIView * gameView;
+@property(nonatomic, strong) UIView *gameView;
 /// 授权秘钥,跨域使用，默认不需要设置
 /// Just use for cross app, default is nil
-@property(nonatomic, strong)NSString *authorizationSecret;
+@property(nonatomic, strong) NSString *authorizationSecret;
+@property(nonatomic, strong) NSString *code;
 @end
 
 /// 游戏事件处理基类模块
 /// SudGameBaseEventHandler is a base class for handling game events.
-@interface SudGameBaseEventHandler : NSObject<SudFSMMGListener>
-
+@interface SudGameBaseEventHandler : NSObject <SudFSMMGListener>
 
 /// SudFSMMGDecorator game -> app 辅助接收解析SudMGP SDK抛出的游戏回调事件、获取相关游戏状态模块
 /// Helper module for receiving and parsing game callback events from SudMGP SDK.
-@property (nonatomic, strong, readonly) SudFSMMGDecorator *sudFSMMGDecorator;
+@property(nonatomic, strong, readonly) SudFSMMGDecorator *sudFSMMGDecorator;
 
 /// SudFSTAPPDecorator app -> game 辅助APP操作游戏相关指令模块
 /// Helper module for sending game-related commands from the app to the game.
-@property (nonatomic, strong, readonly) SudFSTAPPDecorator *sudFSTAPPDecorator;
+@property(nonatomic, strong, readonly) SudFSTAPPDecorator *sudFSTAPPDecorator;
 
 /// 加载游戏配置
 /// The loaded game configuration model.
-@property(nonatomic, strong, readonly)SudGameLoadConfigModel *loadConfigModel;
+@property(nonatomic, strong, readonly) SudGameLoadConfigModel *loadConfigModel;
 
 /// 设置加载游戏配置
 /// Sets the game configuration model.
 /// - Parameter loadConfigModel: 配置model
 - (void)setupLoadConfigModel:(SudGameLoadConfigModel *)loadConfigModel;
-
 
 /// 获取code并返回,子类必须实现向自己应用服务端获取code并返回
 /// 接入方客户端 调用 接入方服务端 getCode: 获取 短期令牌code

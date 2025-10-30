@@ -58,8 +58,12 @@ class SudMGPPlugin(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun loadGame(param: String, promise: Promise) {
         // 实现加载游戏的逻辑
         println("loadGame: $param")
-        SudGameManager.shared.loadGame(param)
-        promise.resolve("Game loaded successfully")
+        var bRet = SudGameManager.shared.loadGame(param)
+        if (!bRet) {
+            promise.reject("Game load failed")
+            return
+        }
+        promise.resolve("handle loadGame")
     }
 
     @ReactMethod

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,7 @@ public class SudGameManager  {
 
     public static SudGameManager shared = new SudGameManager();
 
-    private final QuickStartGameViewModel gameViewModel = new QuickStartGameViewModel();
+    private  QuickStartGameViewModel gameViewModel = new QuickStartGameViewModel();
 
     private GameView gameView;
 
@@ -83,27 +84,44 @@ public class SudGameManager  {
         gameViewModel.onDestroy();
     }
 
-    public void loadGame(String param) {
+    public Boolean loadGame(String param) {
 
         try {
+
+            if (currentActivity == null){
+                Toast.makeText(null, "loadGame currentActivity is empty", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
             JSONObject jsonObject = new JSONObject(param);
-            // Extract fields from JSONObject
-            String appId = jsonObject.getString("appId");
-            String appKey = jsonObject.getString("appKey");
-            boolean isTestEnv = jsonObject.getBoolean("isTestEnv");
-            long gameId =  Long.parseLong(jsonObject.getString("gameId")) ;
-            String roomId = jsonObject.getString("roomId");
-            String userId = jsonObject.getString("userId");
-            String language = jsonObject.getString("language");
-            String authorizationSecret = jsonObject.getString("authorizationSecret");
+                        // Extract fields from JSONObject
+                        String appId = jsonObject.getString("appId");
+                        String appKey = jsonObject.getString("appKey");
+                        boolean isTestEnv = jsonObject.getBoolean("isTestEnv");
+                        long gameId =  Long.parseLong(jsonObject.getString("gameId")) ;
+                        String roomId = jsonObject.getString("roomId");
+                        String userId = jsonObject.getString("userId");
+                        String language = jsonObject.getString("language");
+                        String authorizationSecret = jsonObject.getString("authorizationSecret");
+                        String code = jsonObject.getString("code");
 
-            QuickStartGameViewModel.GAME_IS_TEST_ENV = isTestEnv;
-            QuickStartGameViewModel.SudMGP_APP_ID = appId;
-            QuickStartGameViewModel.SudMGP_APP_KEY = appKey;
-            QuickStartGameViewModel.userId = userId;
-            gameViewModel.languageCode = language;
+            currentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
-            gameViewModel.switchGame(currentActivity,roomId, gameId);
+                        QuickStartGameViewModel.GAME_IS_TEST_ENV = isTestEnv;
+                        QuickStartGameViewModel.SudMGP_APP_ID = appId;
+                        QuickStartGameViewModel.SudMGP_APP_KEY = appKey;
+                        QuickStartGameViewModel.userId = userId;
+                        gameViewModel.languageCode = language;
+                        gameViewModel.updateCode(code);
+
+                        gameViewModel.switchGame(currentActivity,roomId, gameId);
+
+                }
+            });
+            return true;
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

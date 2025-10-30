@@ -1,0 +1,8 @@
+.DS_Store
+android/.gradle
+android/.idea
+android/.kotlin/errors
+android/app/.cxx
+android/app/build
+local.properties
+ios/Demo.xcworkspace/xcuserdata

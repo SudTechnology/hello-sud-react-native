@@ -3,7 +3,7 @@
  * https://sud.tech
  */
 
-package tech.sud.mgp.SudMGPWrapper.state;
+package tech.sud.gip.SudGIPWrapper.state;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * APP to MG 的通用状态定义
  * 参考文档：https://docs.sud.tech/zh-CN/app/Client/APPFST/
  */
-public class SudMGPAPPState implements Serializable {
+public class SudGIPAPPState implements Serializable {
 
     // region 通用状态
     /**
@@ -35,8 +35,12 @@ public class SudMGPAPPState implements Serializable {
         // 加入的游戏位(座位号) 默认传seatIndex = -1 随机加入，seatIndex 从0开始，不可大于座位数
         public int seatIndex;
 
-        // 默认为ture, 带有游戏位(座位号)的时候，如果游戏位(座位号)已经被占用，是否随机分配一个空位坐下 isSeatRandom=true 随机分配空位坐下，isSeatRandom=false 不随机分配
-        public boolean isSeatRandom;
+        @Deprecated
+        // (注：废弃，请使用isRandom替代) 默认为ture, 带有游戏位(座位号)的时候，如果游戏位(座位号)已经被占用，是否随机分配一个空位坐下 isSeatRandom=true 随机分配空位坐下，isSeatRandom=false 不随机分配
+        public Boolean isSeatRandom;
+
+        // 默认为ture, 带有游戏位(座位号)的时候，如果游戏位(座位号)已经被占用，是否随机分配一个空位坐下 isRandom=true 随机分配空位坐下，isRandom=false 不随机分配
+        public Boolean isRandom;
 
         // 不支持分队的游戏：数值填1；支持分队的游戏：数值填1或2（两支队伍）；
         public int teamId;
@@ -174,20 +178,11 @@ public class SudMGPAPPState implements Serializable {
         // true 命中，false 未命中
         public boolean isHit;
 
-        // 单个关键词， 兼容老版本
+        // 关键词
         public String keyWord;
 
-        // 返回转写文本
+        // 聊天原始内容
         public String text;
-
-        // text:文本包含匹配; number:数字等于匹配
-        public String wordType;
-
-        // 命中关键词，可以包含多个关键词
-        public List<String> keyWordList;
-
-        // 在number模式下才有，返回转写的多个数字
-        public List<Integer> numberList;
     }
 
     /**
@@ -468,6 +463,163 @@ public class SudMGPAPPState implements Serializable {
         public String toUid; // 接收方玩家id
         public int count; // 数量
     }
+
+    /**
+     * 34. app通知游戏侧更新游戏币(概率游戏相关玩法)
+     */
+    public static final String APP_COMMON_UPDATE_GAME_MONEY = "app_common_update_game_money";
+
+    /**
+     * 34. app通知游戏侧更新游戏币(概率游戏相关玩法) 模型
+     */
+    public static class AppCommonUpdateGameMoney implements Serializable {
+    }
+
+    /**
+     * 35. app通知游戏玩家所持有的道具卡(只支持飞行棋)
+     */
+    public static final String APP_COMMON_GAME_PLAYER_PROPS_CARDS = "app_common_game_player_props_cards";
+
+    /**
+     * 35. app通知游戏玩家所持有的道具卡(只支持飞行棋) 模型
+     */
+    public static class AppCommonGamePlayerPropsCards implements Serializable {
+        /**
+         * 道具卡数量结构的json字符串
+         * <p>
+         * ludo 返回字符串结构说明
+         * 注：返回的是一个json数据的字符串，specify_dice_roll是遥控骰子字段对应的数量
+         * {"props": "{"specify_dice_roll":0}"}
+         */
+        public String props;
+    }
+
+    /**
+     * 36. app通知游戏播放玩家所获得的道具卡的特效(只支持飞行棋)
+     */
+    public static final String APP_COMMON_GAME_PLAYER_PROPS_CARDS_EFFECT = "app_common_game_player_props_cards_effect";
+
+    /**
+     * 36. app通知游戏播放玩家所获得的道具卡的特效(只支持飞行棋) 模型
+     */
+    public static class AppCommonGamePlayerPropsCardsEffect implements Serializable {
+        /**
+         * 获得的道具卡名字
+         * <p>
+         * 飞行棋（ludo）
+         * paid_events_type: "specify_dice_roll" // 控制指定摇出骰子点数的道具
+         */
+        public String paid_events_type;
+        public String fromUid; // 发送的玩家id
+        public String toUid; // 接收方玩家id
+        public int count; // 数量
+    }
+
+    /**
+     * 37. app通知游戏指定observer观众观看的玩家
+     */
+    public static final String APP_COMMON_GAME_OBSERVE_PLAYER = "app_common_game_observe_player";
+
+    /**
+     * 37. app通知游戏指定observer观众观看的玩家 模型
+     */
+    public static class AppCommonGameObservePlayer implements Serializable {
+        public String uid; // 观众观看的玩家id
+    }
+
+    /**
+     * 38. 设置游戏的背景音音乐量大小（只修改背景音乐音量大小）
+     */
+    public static final String APP_COMMON_GAME_MUSIC_VOLUME = "app_common_game_music_volume";
+
+    /**
+     * 38. 设置游戏的背景音音乐量大小（只修改背景音乐音量大小） 模型
+     */
+    public static class AppCommonGameMusicVolume implements Serializable {
+        public int volume; // 背景音量大小 0 到 100
+    }
+
+    /**
+     * 39. app向游戏下发头像新URL
+     */
+    public static final String APP_COMMON_GAME_AVATAR = "app_common_game_avatar";
+
+    /**
+     * 39. app向游戏下发头像新URL 模型
+     */
+    public static class AppCommonGameAvatar implements Serializable {
+        public List<AvatarModel> avatars; // user头像url列表
+
+        public static class AvatarModel implements Serializable {
+            public String uid; // uid
+            public String avatar; // 头像url
+        }
+    }
+
+    /**
+     * app向游戏下发ai模型的输入
+     */
+    public static final String APP_COMMON_AI_MODEL_MESSAGE = "app_common_ai_model_message";
+
+    /**
+     * app向游戏下发ai模型的输入 模型
+     */
+    public static class AppCommonAiModelMessage implements Serializable {
+        public String text; // 输入的文本；和audio二选一
+        public AppCommonAiModelMessageAudio audio; // 输入的文本；和text二选一
+
+        public static class AppCommonAiModelMessageAudio implements Serializable {
+            public String url; // 音频地址
+            public String base64Data;// 音频base64数据
+        }
+    }
+
+    /**
+     * app向游戏下发玩家mic状态
+     */
+    public static final String APP_COMMON_GAME_PLAYER_MIC_STATE = "app_common_game_player_mic_state";
+
+    /**
+     * app向游戏下发玩家mic状态 模型
+     */
+    public static class AppCommonGamePlayerMicState implements Serializable {
+        public String uid;
+        public int state; // 0：停止说话 1：说话中
+    }
+
+    /**
+     * 设置游戏中的大模型AI玩家
+     */
+    public static final String APP_COMMON_GAME_ADD_BIG_SCALE_MODEL_AI_PLAYERS = "app_common_game_add_big_scale_model_ai_players";
+
+    /**
+     * 设置游戏中的大模型AI玩家 模型
+     */
+    public static class APPCommonGameAddBigScaleModelAIPlayers implements Serializable {
+        public List<ModelAIPlayers> aiPlayers; // AI玩家
+        public int isReady = 1; // 机器人加入后是否自动准备 1：自动准备，0：不自动准备 默认为1
+    }
+
+    public static class ModelAIPlayers implements Serializable {
+        public String userId; // 玩家id
+        public String avatar; // 头像url
+        public String name; // 名字
+        public String gender; // 性别 male：男，female：女
+        public String aiIdStr; // ai id
+    }
+
+    /**
+     * 退出游戏中的大模型AI玩家
+     */
+    public static final String APP_COMMON_GAME_EXIT_BIG_SCALE_MODEL_AI_players = "app_common_game_exit_big_scale_model_ai_players";
+
+    /**
+     * 退出游戏中的大模型AI玩家 模型
+     */
+    public static class APPCommonGameExitBigScaleModelAiPlayers implements Serializable {
+        public List<String> playerIds; // 退出的玩家id列表
+    }
+
     // endregion 通用状态
 
     // region 元宇宙砂砂舞
@@ -1176,5 +1328,31 @@ public class SudMGPAPPState implements Serializable {
         public int pause;
     }
     // endregion 3D语聊房
+
+    // region 喜羊羊
+    /**
+     * 1. 文本/语音聊天
+     */
+    public static final String APP_HAPPY_GOAT_CHAT = "app_happy_goat_chat";
+
+    /**
+     * 1. 文本/语音聊天 模型
+     */
+    public static class AppHappyGoatChat implements Serializable {
+        public int type; // 数据类型：0为文本 1为音频
+        public ChatTextModel text; // 文本数据
+        public ChatAudioModel audio; // 文本数据
+
+        public static class ChatTextModel {
+            public String text; // 输入的聊天文本
+        }
+
+        public static class ChatAudioModel {
+            public String sample_rate; // 音频采样率，枚举值：16k
+            public String audio_format; // 音频格式，枚举值：WAV，OGG-OPUS，PCM，MP3
+            public String audio_base64; // base64音频内容
+        }
+    }
+    // endregion 喜羊羊
 
 }

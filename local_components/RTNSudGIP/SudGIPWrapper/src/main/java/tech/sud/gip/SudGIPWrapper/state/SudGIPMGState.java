@@ -3,7 +3,7 @@
  * https://sud.tech
  */
 
-package tech.sud.mgp.SudMGPWrapper.state;
+package tech.sud.gip.SudGIPWrapper.state;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * MG to APP 的状态定义
  * 参考文档：https://docs.sud.tech/zh-CN/app/Client/MGFSM/
  */
-public class SudMGPMGState implements Serializable {
+public class SudGIPMGState implements Serializable {
 
     // region MG状态机-通用状态-游戏
     // 参考文档：https://docs.sud.tech/zh-CN/app/Client/MGFSM/CommonStateGame.html
@@ -113,6 +113,24 @@ public class SudMGPMGState implements Serializable {
 
             @SerializedName(value = "tr-TR")
             public String tr_TR; // 土耳其语
+
+            @SerializedName(value = "pt-PT")
+            public String pt_PT; // 葡萄语
+
+            @SerializedName(value = "hi-IN")
+            public String hi_IN; // 印地语
+
+            @SerializedName(value = "bn-BD")
+            public String bn_BD; // 孟加拉语
+
+            @SerializedName(value = "tl-PH")
+            public String tl_PH; // 塔加路语(菲律宾)
+
+            @SerializedName(value = "fa-IR")
+            public String fa_IR; // 波斯语(伊朗)
+
+            @SerializedName(value = "ru-RU")
+            public String ru_RU; // 俄罗斯语
         }
 
         public static class MGCommonPublicMessageMsgUser implements Serializable {
@@ -195,7 +213,7 @@ public class SudMGPMGState implements Serializable {
      */
     public static class MGCommonSelfClickJoinBtn implements Serializable {
         // 点击头像加入游戏对应的座位号，int 类型，从0开始， 如果seatIndex=-1，则是随机加入一个空位，如果seatIndex 大于座位数，则加入不成功
-        public int seatIndex;
+        public int seatIndex = -1;
     }
 
     /**
@@ -339,7 +357,8 @@ public class SudMGPMGState implements Serializable {
         // 声音资源类型
         public String type;
         // 播放次数；注：times == 0 为循环播放
-        public String times;
+        // 此参数使用时注意判空
+        public Integer times;
         // https://www.xxxx.xx/xxx.mp3"  声音资源的url链接
         public String url;
     }
@@ -395,8 +414,8 @@ public class SudMGPMGState implements Serializable {
      * 游戏通知app麦克风状态
      */
     public static class MGCommonSelfMicrophone implements Serializable {
-        // 麦克风开关状态 true: 开，false: 关
-        public boolean isOn;
+        public boolean isOn; // 麦克风开关状态 true: 开，false: 关
+        public int state; // 1: 白天 2：黑夜 3：非游戏
     }
 
     /**
@@ -647,17 +666,16 @@ public class SudMGPMGState implements Serializable {
     }
 
     /**
-     * 37. 游戏通知app当前游戏的设置信息（只支持德州pro，teenpatti pro）
+     * 37. 游戏通知app当前游戏的设置信息
      */
     public static final String MG_COMMON_GAME_RULE = "mg_common_game_rule";
 
     /**
-     * 37. 游戏通知app当前游戏的设置信息（只支持德州pro，teenpatti pro） 模型
+     * 37. 游戏通知app当前游戏的设置信息 模型
      */
     public static class MGCommonGameRule implements Serializable {
         public GameRuleModel gameMode;
 
-        // 德州与teenpatti的结构融合在一起
         public static class GameRuleModel {
             public Integer smallBlind; // 小盲
             public Integer ante; // 前注
@@ -671,6 +689,7 @@ public class SudMGPMGState implements Serializable {
             public Integer potLimit; // 最大带入
             public Integer round; // 最大回合
             public Integer singleLimit; // 单注限
+            public Integer mode_ex;
         }
     }
 
@@ -784,6 +803,8 @@ public class SudMGPMGState implements Serializable {
      * 47. 通知app棋子到达终点(ludo) 模型
      */
     public static class MGCommonGamePieceArriveEnd implements Serializable {
+        public String uid; // 玩家id
+        public int pieceIndex; // 棋子编号 0 ~ 3
     }
 
     /**
@@ -795,6 +816,8 @@ public class SudMGPMGState implements Serializable {
      * 48. 通知app玩家是否托管 模型
      */
     public static class MGCommonGamePlayerManagedState implements Serializable {
+        public String uid; // 玩家id
+        public int managed; // 0: 未托管 1：托管
     }
 
     /**
@@ -870,6 +893,123 @@ public class SudMGPMGState implements Serializable {
             public int score; // 积分
         }
     }
+
+    /**
+     * 54. 游戏通知app销毁游戏（只支持部分概率类游戏）
+     */
+    public static final String MG_COMMON_DESTROY_GAME_SCENE = "mg_common_destroy_game_scene";
+
+    /**
+     * 54. 游戏通知app销毁游戏（只支持部分概率类游戏） 模型
+     */
+    public static class MGCommonDestroyGameScene implements Serializable {
+    }
+
+    /**
+     * 55. 游戏通知app击球状态（只支持桌球）
+     */
+    public static final String MG_COMMON_GAME_BILLIARDS_HIT_STATE = "mg_common_game_billiards_hit_state";
+
+    /**
+     * 55. 游戏通知app击球状态（只支持桌球） 模型
+     */
+    public static class MGCommonGameBilliardsHitState implements Serializable {
+        public String uid; // 操作玩家的id
+        /**
+         * state状态说明:
+         * 0: 母球击空或者第一击没击中目标球
+         * 2-7: 连杆
+         * 8: 白球进洞
+         * 9: 没有足够的撞库数量
+         * 10: 开球时进了黑八
+         * 11: 提前进了黑八
+         * 12: 没有有效进球
+         * 13: 有有效进球
+         * 14: 超时
+         */
+        public int state;
+    }
+
+    /**
+     * 56. 游戏向app发送获取玩家持有的指定点数道具卡（只支持飞行棋）
+     */
+    public static final String MG_COMMON_GAME_PLAYER_PROPS_CARDS = "mg_common_game_player_props_cards";
+
+    /**
+     * 56. 游戏向app发送获取玩家持有的指定点数道具卡（只支持飞行棋） 模型
+     */
+    public static class MGCommonGamePlayerPropsCards implements Serializable {
+    }
+
+    /**
+     * 57. 游戏向app发送获游戏通用数据
+     */
+    public static final String MG_COMMON_GAME_INFO_X = "mg_common_game_info_x";
+
+    /**
+     * 57. 游戏向app发送获游戏通用数据 模型
+     */
+    public static class MGCommonGameInfoX implements Serializable {
+        public String eventName; // 事件名称 ，（注：具体游戏参考如下）
+        public String data;  // 具体的数据，为一个JSON字符串， （注：具体游戏参考如下）
+    }
+
+    /**
+     * 通知app开启ai大模型
+     */
+    public static final String MG_COMMON_AI_MODEL_MESSAGE = "mg_common_ai_model_message";
+
+    /**
+     * 通知app开启ai大模型 模型
+     */
+    public static class MGCommonAiModelMessage implements Serializable {
+    }
+
+    /**
+     * 通知app ai消息
+     */
+    public static final String MG_COMMON_AI_MESSAGE = "mg_common_ai_message";
+
+    /**
+     * 通知app ai消息 模型
+     */
+    public static class MGCommonAiMessage implements Serializable {
+        public String uid; // user id
+        public String content; // ai message
+    }
+
+    /**
+     * 64. 通知app ai大模型消息
+     */
+    public static final String MG_COMMON_AI_LARGE_SCALE_MODEL_MSG = "mg_common_ai_large_scale_model_msg";
+
+    /**
+     * 64. 通知app ai大模型消息 模型
+     */
+    public static class MGCommonAiLargeScaleModelMsg implements Serializable {
+        public UserInfo sendUser; // 发送者信息
+        public int messageType; // 1: 所有人，2: 指定人，3: 系统消息
+        public List<UserInfo> receiveUserInfos; // 当message_type=2时，接收人信息数组
+        public String content; // 消息内容
+        public String audioData; // 音频数据，base64编码
+
+        public static class UserInfo implements Serializable {
+            public String playerId; // ai 玩家id
+            public String nickName; // 昵称
+        }
+    }
+
+    /**
+     * 65. 通知app可以开始推送麦克说话状态
+     */
+    public static final String MG_COMMON_GAME_PLAYER_MIC_STATE = "mg_common_game_player_mic_state";
+
+    /**
+     * 65. 通知app可以开始推送麦克说话状态 模型
+     */
+    public static class MGCommonGamePlayerMicState implements Serializable {
+    }
+
     // endregion 通用状态-游戏
 
     // region MG状态机-通用状态-玩家
@@ -1158,6 +1298,7 @@ public class SudMGPMGState implements Serializable {
     public static final class MGCommonGameDiscoAction implements Serializable {
         public int actionId; // 指令序号类型
         public boolean isSuccess; // true 指令成功，false 指令失败
+        public int errCode; // 返回码
     }
 
     /**
@@ -1660,5 +1801,29 @@ public class SudMGPMGState implements Serializable {
         public int seatIndex; // 0~4一共5个麦位，0为老板位，1~4为四个面主播位
     }
     // endregion 3D语聊房
+
+    // region 喜羊羊
+    /**
+     * 1. 文本/语音聊天结果
+     */
+    public static final String MG_HAPPY_GOAT_CHAT = "mg_happy_goat_chat";
+
+    /**
+     * 1. 文本/语音聊天结果 模型
+     */
+    public static final class MGHappyGoatChat implements Serializable {
+        public String icon; // 头像url
+        public String nickname; // 昵称
+        public ChatAudioTextModel[] data;
+
+        public static final class ChatAudioTextModel {
+            public TextModel text; // 对话答复的文本
+        }
+
+        public static final class TextModel {
+            public String text; // 对话答复的文本
+        }
+    }
+    // endregion 喜羊羊
 
 }

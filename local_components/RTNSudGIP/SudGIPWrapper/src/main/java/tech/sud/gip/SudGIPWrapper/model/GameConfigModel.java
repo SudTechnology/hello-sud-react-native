@@ -3,7 +3,7 @@
  * https://sud.tech
  */
 
-package tech.sud.mgp.SudMGPWrapper.model;
+package tech.sud.gip.SudGIPWrapper.model;
 
 import java.io.Serializable;
 
@@ -17,6 +17,8 @@ public class GameConfigModel implements Serializable {
     public int gameCPU = 0; // 游戏CPU（值为0和1；0：CPU正常功耗，1：CPU低功耗；默认是0，CPU正常功耗）
     public int gameSoundControl = 0; // 游戏中声音的播放是否被app层接管（值为0和1；0：游戏播放声音，1：app层播放声音，游戏中不播放任何声音；默认是0）
     public int gameSoundVolume = 100; // 游戏中音量的大小（值为0到100；默认是100）
+    public float viewScale = 1.0f; // 主动缩放游戏（比如0.8就是缩放到原始大小0.8倍，默认为1.0）
+    public int autoScale = 0; // 自动根据安全区缩放游戏（默认0为不开启，设置为1就是开启自动适配缩放）
     public GameUi ui = new GameUi(); // 对游戏ui界面的配置，可定制ui界面的显示与不显示
 
     // 游戏配置中，ui部分
@@ -62,6 +64,12 @@ public class GameConfigModel implements Serializable {
         public WorstTeammateTip worst_teammate_tip = new WorstTeammateTip(); // 友尽闯关中最坑队友的弹框
         public GameOverTip game_over_tip = new GameOverTip(); // 友尽闯关中玩家逃跑导致游戏结束弹框
         public LobbyAnimation lobby_animation = new LobbyAnimation(); // 碰碰我最强大厅动画
+        public GameEffect game_effect = new GameEffect(); // 消消乐中的特效
+        public GameBurstSendBtn game_burst_send_btn = new GameBurstSendBtn(); // 谁是卧底发送爆词按钮
+        public PlayerPairSignular player_pair_singular = new PlayerPairSignular(); // okey101 玩家左上角单双牌
+        public GameRankInfo game_rank_info = new GameRankInfo(); // 怪物消消乐玩家左上角排名
+        public Auxiliary auxiliary = new Auxiliary(); // 是否隐藏游戏中的辅助线（只支持桌球）
+        public ObPnl ob_pnl = new ObPnl(); // 是否隐藏OB玩家观看的提示（只支持ludo）
     }
 
     // 结算界面
@@ -169,6 +177,7 @@ public class GameConfigModel implements Serializable {
     // 游戏结算界面中的关闭按钮
     public static class GameSettleCloseBtn implements Serializable {
         public boolean custom = false; // 游戏结算界面中的关闭按钮（false: 关闭结算界面返回大厅； true: 游戏通知按钮点击事件，并关闭结算界面返回大厅；默认为false）
+        public boolean hide = false; // 是否隐藏结算界面中的『关闭』按钮（false: 显示； true: 隐藏，默认为true）
     }
 
     // 游戏结算界面中的再来一局按钮
@@ -182,7 +191,7 @@ public class GameConfigModel implements Serializable {
     }
 
     // 是否隐藏背景图，包括大厅和战斗
-    // ！！！这里只隐藏加载完成后的背景图，加载中背景图如需隐藏则调用：{SudMGP.getCfg().setShowLoadingGameBg(false); }
+    // ！！！这里只隐藏加载完成后的背景图，加载中背景图如需隐藏则调用：{SudGIP.getCfg().setShowLoadingGameBg(false); }
     public static class GameBg implements Serializable {
         //（false: 显示； true: 隐藏，默认为false）
         public boolean hide = false;
@@ -268,14 +277,14 @@ public class GameConfigModel implements Serializable {
 
     // 你画我猜，小局结算界面点击扔大便按钮
     public static class RoundOverPoopBtn implements Serializable {
-        // 你画我猜，小局结算点击扔大便按钮抛事件（false: 正常点击； true: 游戏通知app按钮点击事件；默认为false）
-        public boolean custom = false;
+        public boolean custom = false; // 你画我猜，小局结算点击扔大便按钮抛事件（false: 正常点击； true: 游戏通知app按钮点击事件；默认为false）
+        public boolean hide = false; // 小局结算点击扔大便按钮隐藏（false: 显示； true: 隐藏；默认为false）
     }
 
     // 你画我猜，小局结算界面点击点赞按钮
     public static class RoundOverGoodBtn implements Serializable {
-        // 你画我猜，小局结算点击点赞按钮抛事件（false: 正常点击； true: 游戏通知app按钮点击事件；默认为false）
-        public boolean custom = false;
+        public boolean custom = false; // 你画我猜，小局结算点击点赞按钮抛事件（false: 正常点击； true: 游戏通知app按钮点击事件；默认为false）
+        public boolean hide = false; // 小局结算点击点赞按钮隐藏（false: 显示； true: 隐藏；默认为false）
     }
 
     // 游戏中所有蒙版
@@ -299,6 +308,42 @@ public class GameConfigModel implements Serializable {
     // 碰碰我最强大厅动画
     public static class LobbyAnimation implements Serializable {
         // 是否隐藏碰碰我最强大厅动画（false: 显示； true: 隐藏，默认为false；）只支持碰碰我最强
+        public boolean hide = false;
+    }
+
+    // 消消乐中的特效
+    public static class GameEffect implements Serializable {
+        // 是否隐藏消消乐中的特效（false: 显示； true: 隐藏，默认为false；）只支持monstercrush(消消乐)
+        public boolean hide = false;
+    }
+
+    // 谁是卧底发送爆词按钮
+    public static class GameBurstSendBtn implements Serializable {
+        // 是否接管发送爆词按钮事件（false: 正常点击； 游戏通知app按钮点击事件；默认为false）只支持谁是卧底
+        public boolean custom = false;
+    }
+
+    // okey101 玩家左上角单双牌
+    public static class PlayerPairSignular implements Serializable {
+        // 是否隐藏玩家左上角单双牌（false: 显示， ture: 隐藏；默认为false）只支持okey101
+        public boolean hide = false;
+    }
+
+    // 怪物消消乐玩家左上角排名
+    public static class GameRankInfo implements Serializable {
+        // 是否隐藏玩家左上角排名（false: 显示， ture: 隐藏；默认为false）只支持怪物消消乐
+        public boolean hide = false;
+    }
+
+    // 是否隐藏游戏中的辅助线（只支持桌球）
+    public static class Auxiliary implements Serializable {
+        // 是否隐藏游戏中的辅助线（false: 显示， ture: 隐藏；默认为false）只支持桌球
+        public boolean hide = false;
+    }
+
+    // 是否隐藏OB玩家观看的提示（只支持ludo）
+    public static class ObPnl implements Serializable {
+        // 是否隐藏OB玩家观看的提示（false: 显示， ture: 隐藏；默认为false）只支持ludo
         public boolean hide = false;
     }
 

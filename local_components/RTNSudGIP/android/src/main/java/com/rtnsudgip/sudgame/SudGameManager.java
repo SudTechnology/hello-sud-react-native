@@ -19,8 +19,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tech.sud.mgp.SudMGPWrapper.model.GameConfigModel;
-import tech.sud.mgp.SudMGPWrapper.model.GameViewInfoModel;
+import tech.sud.gip.SudGIPWrapper.model.GameConfigModel;
+import tech.sud.gip.SudGIPWrapper.model.GameViewInfoModel;
 
 public class SudGameManager  {
 
@@ -31,16 +31,25 @@ public class SudGameManager  {
     private GameView gameView;
 
     private Activity currentActivity = null;
-
+    private SudMGPPlugin plugin = null;
 
     public void setSudMgpPlugin(SudMGPPlugin plugin) {
+        plugin = plugin;
         gameViewModel.setSudMgpPlugin(plugin);
     }
 
     public void setCurrentActivity(AppCompatActivity currentActivity) {
+
+        if (gameViewModel != null) {
+            gameViewModel.destroyMG();
+        } 
+        gameViewModel = new QuickStartGameViewModel();
+        if (plugin != null) {
+            gameViewModel.setSudMgpPlugin(plugin);
+        }
+        
+
         this.currentActivity = currentActivity;
-
-
         // 设置游戏安全操作区域
         // Set the secure operation area for the game.
         GameViewInfoModel.GameViewRectModel gameViewRectModel = new GameViewInfoModel.GameViewRectModel();
@@ -81,7 +90,7 @@ public class SudGameManager  {
     }
 
     public void handleOnDestroy() {
-        gameViewModel.onDestroy();
+        gameViewModel.destroyMG();
     }
 
     public Boolean loadGame(String param) {

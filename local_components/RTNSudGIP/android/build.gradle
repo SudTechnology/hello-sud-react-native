@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native'
-  // 引入 SudMGPWrapper
-  implementation project(':SudMGPWrapper')
+  // 引入 SudGIPWrapper
+  implementation project(':SudGIPWrapper')
 }
 

@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
 
   s.source_files    = "ios/**/*.{h,m,mm,swift}"
 
-      s.dependency 'SudMGP', '~> 1.5.1'
-      s.dependency 'SudMGPWrapper'
+      s.dependency 'SudGIP', '~> 1.6.5'
+      s.dependency 'SudGIPWrapper'
 
   install_modules_dependencies(s)
 end
